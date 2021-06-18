@@ -1,0 +1,22 @@
+﻿<Window x:Class="ScuffedWalls_GUI.EditTextField"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScuffedWalls_GUI"
+        mc:Ignorable="d"
+        Title="Edit Text" Height="140" Width="400" ResizeMode="NoResize" Topmost="True" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <SolidColorBrush x:Key="TextColor" Color="White"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#FF404040"/>
+        <SolidColorBrush x:Key="PanelColor" Color="Transparent"/>
+        <SolidColorBrush x:Key="PanelColor2" Color="#FF101010"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#FF6600CC"/>
+    </Window.Resources>
+    <Grid Background="#FF202020">
+        <Label x:Name="Subject" Content="Edit Text:" Margin="10,10,10,0" VerticalAlignment="Top" Foreground="{DynamicResource TextColor}"/>
+        <TextBox x:Name="NewText" Height="23" Margin="10,40,10,0" TextWrapping="Wrap" VerticalAlignment="Top" BorderBrush="{DynamicResource BorderColor}" Foreground="White" Background="{DynamicResource PanelColor2}" VerticalContentAlignment="Center" Padding="6,0"/>
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,90,10" VerticalAlignment="Bottom" Width="75" Background="{DynamicResource PanelColor}" Foreground="{DynamicResource TextColor}" Click="CancelButton_Click"/>
+        <Button x:Name="OK_Button" Content="OK" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Background="{DynamicResource PanelColor}" Foreground="{DynamicResource TextColor}" Click="OK_Button_Click"/>
+    </Grid>
+</Window>

@@ -1,0 +1,281 @@
+﻿<Window x:Name="TheWindow" x:Class="ScuffedWalls_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:hdx="http://helix-toolkit.org/wpf/SharpDX"
+        xmlns:local="clr-namespace:ScuffedWalls_GUI"
+        mc:Ignorable="d"
+        Title="ScuffedWalls GUI" Height="720" Width="1280" Foreground="White" Background="#FF202020" FontSize="16" KeyDown="Window_KeyDown" Drop="Window_Drop" AllowDrop="True" DragLeave="Window_DragLeave" DragEnter="Window_DragEnter">
+    <Window.Resources>
+        <SolidColorBrush x:Key="TextColor" Color="White"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#FF404040"/>
+        <SolidColorBrush x:Key="PanelColor" Color="Transparent"/>
+        <SolidColorBrush x:Key="PanelColor2" Color="#FF181818"/>
+        <SolidColorBrush x:Key="PanelColorFocused" Color="#FF404040"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#FF6600CC"/>
+        <sys:Double x:Key="MenuItemFontSize">14</sys:Double>
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="TabBorder" BorderBrush="{DynamicResource AccentColor}" BorderThickness="0,2,0,0" Padding="0" Background="{DynamicResource PanelColor}">
+                            <Label Content="{TemplateBinding Header}" Width="100" Height="30" Foreground="{DynamicResource TextColor}" Padding="9,1" VerticalContentAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource PanelColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="VerticalScrollThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="ScrollThumb" Width="6" Height="Auto" Background="#F2181818" CornerRadius="2" HorizontalAlignment="Right" Margin="0,2"/>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="00:00:00.100" To="#F2404040" Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <DoubleAnimation Duration="00:00:00.100" To="10"  Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Width)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="00:00:00.100" To="#F2181818" Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <DoubleAnimation Duration="00:00:00.100" To="6"  Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Width)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="HorizontalScrollThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="ScrollThumb" Width="Auto" Height="6" Background="#F2181818" CornerRadius="2" VerticalAlignment="Bottom" Margin="2,0"/>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="00:00:00.100" To="#F2404040" Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <DoubleAnimation Duration="00:00:00.100" To="10"  Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Height)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="00:00:00.100" To="#F2181818" Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <DoubleAnimation Duration="00:00:00.100" To="6"  Storyboard.TargetName="ScrollThumb" Storyboard.TargetProperty="(Border.Height)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CustomScrollBar" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Track x:Name="PART_Track">
+                            <Track.Thumb>
+                                <Thumb x:Name="ScrollThumb"/>
+                            </Track.Thumb>
+                        </Track>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Vertical">
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
+                                <Setter TargetName="ScrollThumb" Property="Style" Value="{StaticResource VerticalScrollThumb}"/>
+                                <Setter TargetName="PART_Track" Property="Width" Value="10"/>
+                                <Setter TargetName="PART_Track" Property="HorizontalAlignment" Value="Right"/>
+                            </Trigger>
+                            <Trigger Property="Orientation" Value="Horizontal">
+                                <Setter TargetName="ScrollThumb" Property="Style" Value="{StaticResource HorizontalScrollThumb}"/>
+                                <Setter TargetName="PART_Track" Property="Height" Value="10"/>
+                                <Setter TargetName="PART_Track" Property="VerticalAlignment" Value="Bottom"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type ScrollViewer}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                            <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource CustomScrollBar}"/>
+                            <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource CustomScrollBar}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Button Content="{TemplateBinding Header}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource TextColor}" Padding="6,3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        -->
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="ScuffedWindow">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" MinWidth="250"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition MinWidth="300"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="300" MinWidth="250" FrameworkElement.FlowDirection="RightToLeft"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="333*" MinHeight="100"/>
+            <RowDefinition Height="4"/>
+            <RowDefinition Height="218*" MinHeight="100"/>
+            <RowDefinition Height="4"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="22"/>
+        </Grid.RowDefinitions>
+
+        <!-- Grid Splitters -->
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ResizeDirection="Columns" Background="#00F0F0F0"/>
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="3" Grid.RowSpan="4" ResizeDirection="Columns" Background="#00F0F0F0"/>
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="4" ResizeDirection="Rows" Background="#00F0F0F0"/>
+
+        <!-- Menu Strip-->
+        <Grid Margin="0" Background="{DynamicResource PanelColor}" Grid.ColumnSpan="5">
+            <Menu Background="{x:Null}" FontSize="16">
+                <MenuItem Header="File" Padding="10,0" Foreground="{DynamicResource TextColor}" Height="28" BorderThickness="0">
+                    <MenuItem x:Name="OpenFile" Header="Open (Ctrl+O)" Background="{DynamicResource PanelColor}" BorderThickness="0" Foreground="Black" Click="OpenFile_Click" FontSize="{DynamicResource MenuItemFontSize}" Margin="0,2"/>
+                    <MenuItem x:Name="SaveFile" Header="Save (Ctrl+S)" Background="Transparent" Foreground="Black" BorderThickness="0" Click="SaveFile_Click" FontSize="{DynamicResource MenuItemFontSize}" Margin="0,2"/>
+                    <MenuItem x:Name="SaveFileAs" Header="Save As (Ctrl+Shift+S)" Background="Transparent" Foreground="Black" BorderThickness="0" Click="SaveFileAs_Click" FontSize="{DynamicResource MenuItemFontSize}" Margin="0,2"/>
+                </MenuItem>
+            </Menu>
+        </Grid>
+
+        <!-- Toolbox -->
+        <Border BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Grid.Row="1" Grid.RowSpan="3">
+            <Grid>
+                <Label Content="Toolbox" Foreground="White" Height="30" VerticalAlignment="Top" Background="{DynamicResource PanelColor2}" Padding="10,5"/>
+                <ListBox x:Name="Toolbox" Margin="0,30,0,0" Background="{DynamicResource PanelColor}" BorderBrush="{x:Null}" Foreground="{DynamicResource TextColor}" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="30">
+                                <Image Margin="1"/>
+                                <Label x:Name="SFunctionTypeLabel" Content="{Binding ScuffedFunctionType}" Foreground="White" FontSize="14" Height="30" Margin="60,0,0,0" VerticalContentAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- Viewport -->
+        <Border BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Grid.Row="1" Grid.Column="2" Grid.RowSpan="3">
+            <hdx:Viewport3DX x:Name="Viewport" EffectsManager="{Binding EffectsManager}" Camera="{Binding Camera}" Foreground="{x:Null}" BackgroundColor="Black" ShowCoordinateSystem="True" CoordinateSystemHorizontalPosition="-0.92" CoordinateSystemVerticalPosition="-0.92" CoordinateSystemSize="0.4" IsCoordinateSystemMoverEnabled="False" ShowViewCube="False" ShowCameraInfo="True" ShowFrameDetails="True" ShowFrameRate="True" ShowTriangleCountInfo="True" CameraInertiaFactor="0.48">
+                <hdx:Viewport3DX.InputBindings>
+                    <KeyBinding Key="NumPad8" Command="hdx:ViewportCommands.TopView"/>
+                    <KeyBinding Key="NumPad4" Command="hdx:ViewportCommands.LeftView"/>
+                    <KeyBinding Key="NumPad6" Command="hdx:ViewportCommands.RightView"/>
+                    <KeyBinding Key="NumPad2" Command="hdx:ViewportCommands.BottomView"/>
+                    <KeyBinding Key="NumPad5" Command="hdx:ViewportCommands.FrontView"/>
+                    <KeyBinding Key="NumPad9" Command="hdx:ViewportCommands.BackView"/>
+                    <KeyBinding Key="W" Command=""/>
+                    <KeyBinding Key="A" Command=""/>
+                    <KeyBinding Key="S" Command=""/>
+                    <KeyBinding Key="D" Command=""/>
+                    <MouseBinding Gesture="MiddleClick" Command="hdx:ViewportCommands.Pan"/>
+                    <MouseBinding Gesture="RightClick" Command="hdx:ViewportCommands.Rotate"/>
+                </hdx:Viewport3DX.InputBindings>
+            </hdx:Viewport3DX>
+        </Border>
+
+        <!-- Outliner -->
+        <Border BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Grid.Row="1" Grid.Column="4">
+            <Grid>
+                <Label Content="Beat" Foreground="White" Height="30" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Background="{DynamicResource PanelColor2}"/>
+                <Label Content="Function" Foreground="White" Height="30" VerticalAlignment="Top" Margin="60,0,0,0" Background="{DynamicResource PanelColor2}"/>
+                <ListBox x:Name="Outliner" Margin="0,30,0,0" Background="{DynamicResource PanelColor}" BorderBrush="{x:Null}" Foreground="{DynamicResource TextColor}" BorderThickness="0" SelectionChanged="Outliner_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="30">
+                                <Label x:Name="BeatNumberLabel" Content="{Binding ScuffedFunction.BeatNumber}" Foreground="White" FontSize="14" Height="30" Width="60" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" MouseDown="BeatNumberLabel_MouseDown"/>
+                                <Label x:Name="SFunctionTypeLabel" Content="{Binding SFunctionType}" Foreground="White" FontSize="14" Height="30" Margin="60,0,0,0" VerticalContentAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- Property Editor -->
+        <Border BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Grid.Row="3" Grid.Column="4" Grid.RowSpan="3">
+            <Grid Background="{DynamicResource PanelColor}">
+                <Label Content="Properties" Foreground="White" Height="30" VerticalAlignment="Top" Background="{DynamicResource PanelColor2}" Padding="10,5"/>
+                <StackPanel Margin="0,30,0,0">
+                    <Grid x:Name="PROPERTY_SetBeat">
+                        <Label Content="Beat" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="{DynamicResource MenuItemFontSize}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="PROPERTY_BeatNumber" Background="{DynamicResource PanelColor2}" BorderBrush="{DynamicResource BorderColor}" Margin="0,4,10,4" Width="80" HorizontalAlignment="Right" Foreground="{DynamicResource TextColor}" FontSize="{DynamicResource MenuItemFontSize}" Padding="3"/>
+                    </Grid>
+                    <Grid x:Name="PROPERTY_SetPath">
+                        <Label Content="Path" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="{DynamicResource MenuItemFontSize}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="PROPERTY_Path" Background="{DynamicResource PanelColor2}" BorderBrush="{DynamicResource BorderColor}" Margin="58,4,10,4" Foreground="{DynamicResource TextColor}" FontSize="{DynamicResource MenuItemFontSize}" Padding="3"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Timeline -->
+        <Border BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Grid.Row="5" Grid.ColumnSpan="3">
+            <Grid Margin="0" Background="{DynamicResource PanelColor}"/>
+        </Border>
+
+        <!-- Status Bar -->
+        <Grid Margin="0" Grid.Row="6" Background="{DynamicResource AccentColor}" Grid.ColumnSpan="5">
+            <Image HorizontalAlignment="Left" Height="22" Margin="0" Width="22"/>
+            <Label x:Name="StatusLabel" Content="No Scuffed Walls file loaded" VerticalAlignment="Top" Margin="22,0,0,0" Foreground="{DynamicResource TextColor}" Padding="5,1" VerticalContentAlignment="Center" FontSize="12" Height="22"/>
+        </Grid>
+
+        <!-- Drag Drop Overlay -->
+        <Border x:Name="DragDropFileOverlay" Grid.RowSpan="5" Grid.ColumnSpan="5" Grid.Row="1" Width="360" Height="160" Background="{DynamicResource PanelColorFocused}" CornerRadius="20" Opacity="0.4" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+            <Grid>
+                <Label Content="Drag and Drop" Margin="0,0,0,30" VerticalAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource TextColor}" FontSize="24" FontWeight="Bold"/>
+                <Label x:Name="DDOverlayText" Content="Scuffed Walls File (.sw)" Margin="0,30,0,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource TextColor}" FontSize="16"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
